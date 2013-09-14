@@ -8,7 +8,7 @@ Version : 1.0
 Require : PHP 5.3.2 +
 ____
 
-## Features
+#### Features
 
 * Convert object to json and Json to object
 * Convert PHP object containning private fiels
@@ -16,7 +16,7 @@ ____
 
 ____
 
-## Usage
+#### Usage
 
 				<?php
 				
@@ -57,7 +57,7 @@ ____
 				//-- #2
 				echo "<pre>"; print_r($pson->toJSON($user));
 
-## Ouput
+#### Ouput
 
 				//-- #1
 				User Object
@@ -78,7 +78,7 @@ ____
 
 ____
 
-## Package content description
+#### Package content description
 
 * ./Pson.class.php 	: Pson lib class
 * ./addendum/ 			: Addendum lib used by Pson
