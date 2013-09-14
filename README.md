@@ -13,7 +13,13 @@ ____
 * Convert object to json and Json to object
 * Convert PHP object containning private fiels
 * Use annotation to serialize/deserialize complex class fileds
+____
 
+### Package content 
+
+* ./Pson.class.php 	: Pson lib class
+* ./addendum/ 		: Addendum lib used by Pson
+* ./index.php		: Pson usage sample
 ____
 
 ### Usage
@@ -73,11 +79,7 @@ ____
 				//-- #2
 				{"_nom":"mike","_prenom":"phoenix","_user":null,"_voiture":{"_modele":"Audi A4","_prix":20000}}
 
+
 ____
 
-### Package content description
-
-* ./Pson.class.php 	: Pson lib class
-* ./addendum/ 		: Addendum lib used by Pson
-* ./index.php		: Pson usage sample
-
+(c) 2013 [Mikangali Labs](http://mikangali.com)
