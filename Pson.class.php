@@ -64,7 +64,7 @@ class Pson {
     
     /**
      * Convert Object to json string.
-     * @param $object : Object to convert
+     * @param $object Object to convert
      */    
     public function toJSON($object) {
 		//TODO : Exclusion strategy
