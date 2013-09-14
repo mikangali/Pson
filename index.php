@@ -18,10 +18,8 @@ require 'Pson.class.php';
 		 * @FieldClass('Voiture')
 		 */
 		private $_voiture;
-
-		function User(){ 
-			$this->_voiture = new Voiture();
-		}
+		
+		// other fiedls or methods ... 
 	}
 
 	class Voiture {
