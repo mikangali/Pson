@@ -8,7 +8,7 @@ Version : 1.0
 Require : PHP 5.3.2 +
 ____
 
-#### Features
+### Features
 
 * Convert object to json and Json to object
 * Convert PHP object containning private fiels
@@ -16,27 +16,24 @@ ____
 
 ____
 
-#### Usage
+### Usage
 
 				<?php
 				
 				//-- Include Pson Lib
 				require 'Pson.class.php';
 				
-				//-- Simple PHP class
+				//-- Simple PHP modele class
 				class User{
 		
-					private $_nom;						//-- private field
+					private $_nom;			//-- private field
 					public $_prenom;
 						
 					/**
 					 * @FieldClass('Voiture')
 					 */
-					private $_voiture;				//-- complex type field
+					private $_voiture;		//-- complex type field
 				
-					function User(){ 
-						$this->_voiture = new Voiture();
-					}
 				}
 				
 				class Voiture {
@@ -57,7 +54,7 @@ ____
 				//-- #2
 				echo "<pre>"; print_r($pson->toJSON($user));
 
-#### Ouput
+### Ouput
 
 				//-- #1
 				User Object
@@ -78,9 +75,9 @@ ____
 
 ____
 
-#### Package content description
+### Package content description
 
 * ./Pson.class.php 	: Pson lib class
-* ./addendum/ 			: Addendum lib used by Pson
-* ./index.php				: Pson usage sample
+* ./addendum/ 		: Addendum lib used by Pson
+* ./index.php		: Pson usage sample
 
