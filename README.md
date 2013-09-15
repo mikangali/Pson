@@ -16,7 +16,8 @@ ____
  
 ####TODO:
 
-* Create Pson builder to set option (serializeNulls, excludeModifiers ...)
+* Create Pson builder to set options (serializeNulls, excludeModifiers ...)
+* Add new annotation @Expose for managing fields exclusion
 
 ____
 
