@@ -12,7 +12,11 @@ ____
 
 * Convert object to json and Json to object
 * Convert PHP object containning private fiels
-* Use annotation to serialize/deserialize complex class fileds
+* Use annotation to serialize/deserialize complex fileds
+ 
+####TODO:
+
+* Create Pson builder to set option (serializeNulls, excludeModifiers ...)
 
 ____
 
@@ -50,17 +54,17 @@ ____
 				}			
 				
 				//-- json string
-				$json = '{"_nom":"mike","_prenom":"phoenix","_voiture":{"_modele":"Audi A4","_prix":20000},"_voiture2":{"_modele":"Audi A3","_prix":10000}}';
+				$json = '{"_nom":"mike","_prenom":"phoenix","_voiture":{"_modele":"Audi A4","_prix":20000}}';
 				
 				$pson = new Pson();
 				
-				$user = $pson->fromJSON($json,'User');
+				$user = $pson->fromJson($json,'User');
 				
 				//-- #1
 				echo "<pre>"; print_r($user);
 				
 				//-- #2
-				echo "<pre>"; print_r($pson->toJSON($user));
+				echo "<pre>"; print_r($pson->toJson($user));
 
 ### Ouput
 
