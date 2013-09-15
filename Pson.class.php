@@ -33,18 +33,25 @@ class FieldClass extends Annotation { }
 
 
 /**
- * Pson class
- * @author Michael
- *
+ * Pson class lib main class.
+ * Pson is typically used by first constructing a Pson instance and then
+ * invoking {@link #toJson(Object)} or {@link #fromJson(String, Class)} methods on it.
+ * 
+ * @author @mikamboo
+ * 
  */
 class Pson {
+	
+	private $serializeNulls 	= true;
+	private $exclusionModifiers = array('protected');
     
     /**
      * Convert json string to obect of specified class
      * @thows Exception if $json provided is invalide
+     * @since 1.0
      */
-    public function fromJSON($json, $className) {
-        
+    public function fromJson($json, $className) {
+    	        
         //-- Check if class name is accessible
         if (!class_exists($className)) {
             throw new Exception("Class '$className' not found.");
@@ -65,9 +72,9 @@ class Pson {
     /**
      * Convert Object to json string.
      * @param $object Object to convert
+     * @since 1.0
      */    
-    public function toJSON($object) {
-		//TODO : Exclusion strategy
+    public function toJson($object) {
     	$data = $this->_objectToArray($object);
         return json_encode($data);
     }
@@ -75,6 +82,7 @@ class Pson {
     /**
      * Parse object, access private fields
      * @return Array of object data
+     * @since 1.0
      */
     private function _objectToArray($object){
     	
@@ -86,11 +94,21 @@ class Pson {
     		
     		foreach ( $classPorperties as $property ) {
     			
+				//-- Apply modifiers exclusion strategy
+    			if($this->propertyExcluded($property)){
+    				continue;
+    			}
+
     			$property->setAccessible(true);
-    			
     			$name = $property->getName();
     			$val  = $property->getValue($object);
-
+    			
+    			//-- Apply serializeNulls constraint
+    			if(!$this->serializeNulls && $val==null){
+    				continue;
+    			}
+    			
+    			
     			if(gettype($val) != FIELD_TYPE_OBJECT){
     				$data[$name] = $val;
     			}
@@ -108,6 +126,7 @@ class Pson {
     
     /**
      * Parse json object
+     * @since 1.0
      */
 	private function _parseJsonObject($jsonObject, $className){
 
@@ -116,8 +135,16 @@ class Pson {
 		
 		foreach ($jsonObject as $attr => $val) 
 		{
+			//-- skip unknow field
+			if(!$class->hasProperty($attr)){
+				continue;
+			}
+			
+			//-- Get property
+			$property = $class->getProperty($attr);
+			
 			if(gettype($val) != FIELD_TYPE_OBJECT){
-				 $this->_setPropertyValue($class, $object, $attr, $val);
+				$this->_setPropertyValue($class, $object, $attr, $val);
 			}
 			else{
 				
@@ -133,8 +160,11 @@ class Pson {
 							$obj = $this->_parseJsonObject($val, $type);
 						 	$this->_setPropertyValue($class, $object, $attr, $obj);
 						}
-					} else{
-						//TODO : traiter cas si pas d'annotation
+					} 
+					else{
+						//-- No 'FieldClass' annotation found
+						$property->setAccessible(true);
+						$property->setValue($object, $val);
 					}
 					
 				} catch (ReflectionException $e) {
@@ -148,6 +178,7 @@ class Pson {
 	
 	/**
 	 * ReflectionClass property setter util function
+	 * @since 1.0
 	 */
 	private function _setPropertyValue(ReflectionClass $class, $object, $attr, $val){
 		
@@ -159,6 +190,23 @@ class Pson {
 		}
 		return FALSE;
 	}	
+	
+	/**
+	 * Check if a property modifer processing is allowed
+	 * @param ReflectionProperty $property
+	 * @return boolean
+	 * @since 1.0
+	 */
+	function propertyExcluded(ReflectionProperty $property){
+		foreach ($this->exclusionModifiers as $excluded) {
+			$modifiers = Reflection::getModifierNames($property->getModifiers());
+	
+			if(in_array($excluded, $modifiers)){
+				return TRUE;
+			}
+		}
+		return FALSE;
+	}
 	
 }
 
