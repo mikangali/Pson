@@ -1,5 +1,4 @@
 
-
 <?php
 
 require 'Pson.class.php';
@@ -22,7 +21,7 @@ require 'Pson.class.php';
 		public $_prix;
 	}
 
-	$json = '{"_nom":"mike","_prenom":"phoenix","_voiture":{"_modele":"Audi A4","_prix":20000}}';
+	$json = '{"_nom":"mike","_prenom":"brandon","_voiture":{"_modele":"Audi A4","_prix":20000}}';
 	
 	$pson = new Pson();
 	
