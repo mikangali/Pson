@@ -1,0 +1,24 @@
+{
+    "name": "mikangali/pson",
+    "type": "library",
+    "description": "Convert an Object into its JSON representation and vice versa",
+    "keywords": ["json"],
+    "homepage": "https://github.com/mikangali-labs/Pson",
+    "license": "GNU LESSER GENERAL PUBLIC LICENSE",
+    "authors": [
+        {
+            "name": "Mikangali Labs",
+            "email": "contact@mikangali.com",
+            "homepage": "http://mikangali.com/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "Mikangali": "src"
+        }
+    }
+}
