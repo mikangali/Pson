@@ -19,7 +19,9 @@
  * You should have received a copy of the GNU Lesser General Public.
  *
  * */
-require_once(dirname(__FILE__) . '/../lib/addendum/annotations.php');
+namespace Pson;
+
+require_once(dirname(__FILE__) . '/../../lib/addendum/annotations.php');
 
 define('FIELD_CLASS_NAME', 'FieldClass');
 define('FIELD_TYPE_OBJECT', 'object');
@@ -28,7 +30,7 @@ define('FIELD_TYPE_OBJECT', 'object');
  * Annotation attribute class
  * @see Addendum library
  */
-class FieldClass extends Annotation {
+class FieldClass extends \Annotation {
 
 }
 
