@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU Lesser General Public.
  *
  * */
-namespace Pson;
+namespace Mikangali\Pson;
 
 use Addendum;
 use Annotation;
@@ -31,7 +31,7 @@ use ReflectionException;
 use ReflectionProperty;
 use ReflectionProperty as ReflectionProperty2;
 
-require_once(dirname(__FILE__) . '/../../lib/addendum/annotations.php');
+require_once(dirname(__FILE__) . '/../../../lib/addendum/annotations.php');
 
 define('FIELD_CLASS_NAME', 'FieldClass');
 define('FIELD_TYPE_OBJECT', 'object');

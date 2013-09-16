@@ -1,11 +1,8 @@
-
-
-
 <?php
 
-require '../src/Pson/Pson.php';
+require '../src/Mikangali/Pson/Pson.php';
 
-use Pson\Pson;
+use Mikangali\Pson\Pson;
 
 class User {
 
