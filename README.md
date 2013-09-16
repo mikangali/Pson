@@ -84,7 +84,7 @@ ____
 				)
 
 				//-- #2
-				{"_nom":"mike","_prenom":"phoenix","_user":null,"_voiture":{"_modele":"Audi A4","_prix":20000}}
+				{"_nom":"mike","_prenom":"phoenix","_voiture":{"_modele":"Audi A4","_prix":20000}}
 
 
 _____
