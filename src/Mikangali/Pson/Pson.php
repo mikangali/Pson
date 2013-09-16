@@ -21,7 +21,6 @@
  * */
 namespace Mikangali\Pson;
 
-use Addendum;
 use Annotation;
 use Exception;
 use Reflection;
@@ -29,7 +28,6 @@ use ReflectionAnnotatedProperty;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
-use ReflectionProperty as ReflectionProperty2;
 
 require_once(dirname(__FILE__) . '/../../../lib/addendum/annotations.php');
 
@@ -210,7 +208,7 @@ class Pson {
      * @return boolean
      * @since 1.0
      */
-    function propertyExcluded(ReflectionProperty2 $property)
+    function propertyExcluded(ReflectionProperty $property)
     {
         foreach ($this->exclusionModifiers as $excluded) {
             $modifiers = Reflection::getModifierNames($property->getModifiers());
