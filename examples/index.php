@@ -1,7 +1,11 @@
 
+
+
 <?php
 
-require '../src/Pson/Pson.class.php';
+require '../src/Pson/Pson.php';
+
+use Pson\Pson;
 
 class User {
 
