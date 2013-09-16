@@ -58,7 +58,9 @@ class Pson {
     private $exclusionModifiers = array('protected');
 
     /**
-     * Convert json string to obect of specified class
+     * Convert json string to obect of specified class.
+     * @param json $json String formated in Json
+     * @param String $className Destination name class
      * @thows Exception if $json provided is invalide
      * @since 1.0
      */
@@ -94,7 +96,7 @@ class Pson {
     }
 
     /**
-     * Parse object, access private fields
+     * Parse object, access private fields.
      * @return Array of object data
      * @since 1.0
      */
@@ -138,7 +140,7 @@ class Pson {
     }
 
     /**
-     * Parse json object
+     * Parse json object.
      * @since 1.0
      */
     private function _parseJsonObject($jsonObject, $className)
@@ -187,7 +189,7 @@ class Pson {
     }
 
     /**
-     * ReflectionClass property setter util function
+     * ReflectionClass property setter util function.
      * @since 1.0
      */
     private function _setPropertyValue(ReflectionClass $class, $object, $attr, $val)
@@ -203,7 +205,7 @@ class Pson {
     }
 
     /**
-     * Check if a property modifer processing is allowed
+     * Check if a property modifer processing is allowed.
      * @param ReflectionProperty $property
      * @return boolean
      * @since 1.0
