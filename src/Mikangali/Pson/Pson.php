@@ -74,9 +74,33 @@ class Pson {
     	$this->serializeNulls 		= false;
     	$this->excludeNotExposed 	= false;
     	$this->exclusionModifiers 	= array('protected');
-    }
+    } 
 
     /**
+     * Exclude null fiels from serialization
+	 * @param boolean $serializeNulls
+	 */
+	public function setSerializeNulls($serializeNulls) {
+		$this->serializeNulls = $serializeNulls;
+	}
+
+	/**
+	 * Exclude fiels without @Expose annotation from serialization
+	 * @param boolean $excludeNotExposed
+	 */
+	public function setExcludeNotExposed($excludeNotExposed) {
+		$this->excludeNotExposed = $excludeNotExposed;
+	}
+
+	/**
+	 * Set list of modifiers to exude from serillization, eg. array('protected', 'static', 'private')
+	 * @param multitype:string  $exclusionModifiers
+	 */
+	public function setExclusionModifiers($exclusionModifiers) {
+		$this->exclusionModifiers = is_array($exclusionModifiers) ? $exclusionModifiers : array('protected');
+	}
+
+	/**
      * Convert json string to obect of specified class.
      * @param json $json String formated in Json
      * @param String $className Destination name class
@@ -100,7 +124,7 @@ class Pson {
         }
 
         //-- Convert json object to provided type
-        return $this->_parseJsonObject($jsonObject, $className);
+        return $this->parseJsonObject($jsonObject, $className);
     }
 
     /**
@@ -110,7 +134,7 @@ class Pson {
      */
     public function toJson($object)
     {
-        $data = $this->_objectToArray($object);
+        $data = $this->objectToArray($object);
         return json_encode($data);
     }
 
@@ -119,7 +143,7 @@ class Pson {
      * @return Array of object data
      * @since 1.0
      */
-    private function _objectToArray($object)
+    private function objectToArray($object)
     {
 
         $data = array();
@@ -148,7 +172,7 @@ class Pson {
                 if (gettype($val) != FIELD_TYPE_OBJECT) {
                     $data[$name] = $val;
                 } else {
-                    $data[$name] = $this->_objectToArray($val);
+                    $data[$name] = $this->objectToArray($val);
                 }
             }
         } catch (ReflectionException $e) {
@@ -162,7 +186,7 @@ class Pson {
      * Parse json object.
      * @since 1.0
      */
-    private function _parseJsonObject($jsonObject, $className)
+    private function parseJsonObject($jsonObject, $className)
     {
 
         $class  = new ReflectionClass($className);
@@ -174,7 +198,7 @@ class Pson {
 			$property = $class->getProperty($attr);
 			
 			//-- Get annotation if it exists
-			$reflectedAttr = new ReflectionAnnotatedProperty($className, $attr);
+			$reflectedAttr = new ReflectionAnnotatedProperty($className, $attr);		
 			
 			//-- Apply @Expose exclusion contraint
 			if($this->excludeNotExposed && !$reflectedAttr->hasAnnotation(ANNOTATION_EXPOSE)){
@@ -185,7 +209,7 @@ class Pson {
 			if(!$class->hasProperty($attr)){
 				continue;
 			}
-			
+
             if (gettype($val) != FIELD_TYPE_OBJECT) {
                 $this->_setPropertyValue($class, $object, $attr, $val);
             } else {
@@ -197,7 +221,7 @@ class Pson {
                         $type = $reflectedAttr->getAnnotation(ANNOTATION_CLASSE)->value;
 
                         if ($attr == $name) {
-                            $obj = $this->_parseJsonObject($val, $type);
+                            $obj = $this->parseJsonObject($val, $type);
                             $this->_setPropertyValue($class, $object, $attr, $obj);
                         }
                     } else {
