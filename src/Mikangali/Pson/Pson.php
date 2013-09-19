@@ -31,16 +31,23 @@ use ReflectionProperty;
 
 require_once(dirname(__FILE__) . '/../../../lib/addendum/annotations.php');
 
-define('FIELD_CLASS_NAME', 'FieldClass');
+
+define('ANNOTATION_EXPOSE', 'Expose');
+define('ANNOTATION_CLASSE', 'FieldClass');
+
 define('FIELD_TYPE_OBJECT', 'object');
 
 /**
  * Annotation attribute class
  * @see Addendum library
  */
-class FieldClass extends Annotation {
+class FieldClass extends Annotation { }
 
-}
+/**
+ * Annotation for exclusion strategy
+ * @see Addendum library
+ */
+class Expose extends Annotation { }
 
 /**
  * Pson class lib main class.
@@ -52,8 +59,22 @@ class FieldClass extends Annotation {
  */
 class Pson {
 
-    private $serializeNulls     = true;
-    private $exclusionModifiers = array('protected');
+    private $serializeNulls;
+    private $excludeNotExposed;
+    private $exclusionModifiers;
+    
+    /**
+     * Constructs a Pson object with specific configuration if user provides params,
+     * or constructs a Gson object with default configuration.
+     * @param boolean $serializeNulls 	: Ask Pson to serialize null fields
+     * @param array $exclusionModifiers : List of excluded modifiers eg. array('protected', 'static', 'private')
+     * @param boolean $excludeFieldsWithoutExpose : Ask Pson to skip field without @Expose annotation 
+     */
+    function __construct(){
+    	$this->serializeNulls 		= false;
+    	$this->excludeNotExposed 	= false;
+    	$this->exclusionModifiers 	= array('protected');
+    }
 
     /**
      * Convert json string to obect of specified class.
@@ -148,31 +169,39 @@ class Pson {
         $object = $class->newInstanceWithoutConstructor();
 
         foreach ($jsonObject as $attr => $val) {
-            //-- skip unknow field
-            if (!$class->hasProperty($attr)) {
-                continue;
-            }
-
-            //-- Get property
-            $property = $class->getProperty($attr);
-
+        	
+        	//-- Get property
+			$property = $class->getProperty($attr);
+			
+			//-- Get annotation if it exists
+			$reflectedAttr = new ReflectionAnnotatedProperty($className, $attr);
+			
+			//-- Apply @Expose exclusion contraint
+			if($this->excludeNotExposed && !$reflectedAttr->hasAnnotation(ANNOTATION_EXPOSE)){
+				continue;
+			}
+			
+			//-- skip unknow field
+			if(!$class->hasProperty($attr)){
+				continue;
+			}
+			
             if (gettype($val) != FIELD_TYPE_OBJECT) {
                 $this->_setPropertyValue($class, $object, $attr, $val);
             } else {
 
                 try {
 
-                    $reflectedAttr = new ReflectionAnnotatedProperty($className, $attr);
-
-                    if ($reflectedAttr->hasAnnotation(FIELD_CLASS_NAME)) {
+                    if ($reflectedAttr->hasAnnotation(ANNOTATION_CLASSE)) {
                         $name = $reflectedAttr->name;
-                        $type = $reflectedAttr->getAnnotation(FIELD_CLASS_NAME)->value;
+                        $type = $reflectedAttr->getAnnotation(ANNOTATION_CLASSE)->value;
 
                         if ($attr == $name) {
                             $obj = $this->_parseJsonObject($val, $type);
                             $this->_setPropertyValue($class, $object, $attr, $obj);
                         }
                     } else {
+                    	
                         //-- No 'FieldClass' annotation found
                         $property->setAccessible(true);
                         $property->setValue($object, $val);
