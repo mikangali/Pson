@@ -21,7 +21,8 @@
  * */
 namespace Mikangali\Pson;
 
-use Annotation;
+require_once(dirname(__FILE__) . '/Annotations.php');
+
 use Exception;
 use Reflection;
 use ReflectionAnnotatedProperty;
@@ -29,25 +30,9 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionProperty;
 
-require_once(dirname(__FILE__) . '/../../../lib/addendum/annotations.php');
-
-
-define('ANNOTATION_EXPOSE', 'Expose');
-define('ANNOTATION_CLASSE', 'FieldClass');
-
-define('FIELD_TYPE_OBJECT', 'object');
-
-/**
- * Annotation attribute class
- * @see Addendum library
- */
-class FieldClass extends Annotation { }
-
-/**
- * Annotation for exclusion strategy
- * @see Addendum library
- */
-class Expose extends Annotation { }
+const ANNOTATION_EXPOSE 	= "Expose";
+const ANNOTATION_CLASS 		= "FieldClass";
+const FIELD_TYPE_OBJECT		= "object";
 
 /**
  * Pson class lib main class.
@@ -198,7 +183,7 @@ class Pson {
 			$property = $class->getProperty($attr);
 			
 			//-- Get annotation if it exists
-			$reflectedAttr = new ReflectionAnnotatedProperty($className, $attr);		
+			$reflectedAttr = new ReflectionAnnotatedProperty($className, $attr);	
 			
 			//-- Apply @Expose exclusion contraint
 			if($this->excludeNotExposed && !$reflectedAttr->hasAnnotation(ANNOTATION_EXPOSE)){
@@ -216,9 +201,9 @@ class Pson {
 
                 try {
 
-                    if ($reflectedAttr->hasAnnotation(ANNOTATION_CLASSE)) {
+                    if ($reflectedAttr->hasAnnotation(ANNOTATION_CLASS)) {
                         $name = $reflectedAttr->name;
-                        $type = $reflectedAttr->getAnnotation(ANNOTATION_CLASSE)->value;
+                        $type = $reflectedAttr->getAnnotation(ANNOTATION_CLASS)->value;
 
                         if ($attr == $name) {
                             $obj = $this->parseJsonObject($val, $type);
