@@ -34,7 +34,7 @@ ____
 				<?php
 
 				//-- Include Pson Lib
-				require 'Pson.class.php';
+				require ' Pson/src/Mikangali/Pson/Pson.php';
 
 				//-- Simple PHP modele class
 				class User{
