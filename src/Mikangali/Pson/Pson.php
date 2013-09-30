@@ -179,6 +179,11 @@ class Pson {
 
         foreach ($jsonObject as $attr => $val) {
         	
+			//-- skip unknow field
+			if(!$class->hasProperty($attr)){
+				continue;
+			}
+			
         	//-- Get property
 			$property = $class->getProperty($attr);
 			
@@ -187,11 +192,6 @@ class Pson {
 			
 			//-- Apply @Expose exclusion contraint
 			if($this->excludeNotExposed && !$reflectedAttr->hasAnnotation(ANNOTATION_EXPOSE)){
-				continue;
-			}
-			
-			//-- skip unknow field
-			if(!$class->hasProperty($attr)){
 				continue;
 			}
 
