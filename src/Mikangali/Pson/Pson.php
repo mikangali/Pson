@@ -32,7 +32,6 @@ use ReflectionProperty;
 
 const ANNOTATION_EXPOSE 	= "Expose";
 const ANNOTATION_CLASS 		= "FieldClass";
-const FIELD_TYPE_OBJECT		= "object";
 
 /**
  * Pson class lib main class.
@@ -86,7 +85,7 @@ class Pson {
 	}
 
 	/**
-     * Convert json string to obect of specified class.
+     * Convert json to object instance of specified class.
      * @param json $json String formated in Json
      * @param String $className Destination name class
      * @thows Exception if $json provided is invalide
@@ -111,6 +110,84 @@ class Pson {
         //-- Convert json object to provided type
         return $this->parseJsonObject($jsonObject, $className);
     }
+    
+    /**
+     * Convert json to objects array of specified class.
+     * @param json $json String formated in Json
+     * @param String $className Destination name class
+     * @thows Exception if $json provided is not an array of objects
+     * @since 1.0
+     */    
+    public function fromJsonArray($json, $className)
+    {
+    	//-- Get object from json
+    	$jsonArray = json_decode($json);
+    
+    	//-- Check if class name is accessible
+    	if (!class_exists($className)) {
+    		throw new Exception("Optput class '$className' not found.");
+    	}
+    
+    	//-- Check if json is valide
+    	if (gettype($jsonArray) == "array") {
+    
+    		$result = array();
+    		foreach ($jsonArray as $object) {
+    			if (gettype($object) != "object") {
+    				//-- the json must be a simple array of objects
+    				throw new Exception("json provided is not an array of objects !");
+    			}
+    			$result[] = $this->parseJsonObject($object, $className);
+    		}
+    	} else{
+    		//-- the json must be a simple array of objects
+    		throw new Exception("json provided is not an array of objects !");
+    	}
+    
+    	//-- Return array of object
+    	return $result;
+    }
+    
+	/**
+     * Extract json sub-element from a json string or an object.
+     * 
+     * @param object|string $source json
+     * @param string $key identifier
+     * 
+	 * @return NULL|string the json extracted
+	 * @since 1.0
+ 	 */
+    public function getJson($source, $key)
+    {
+    	//-- Transform source element to object
+    	$object = $source;
+    	if (gettype($source) != "object") {
+    		$object = json_decode((string)$source);
+    		if (gettype($object) != "object") {
+    			return NULL;
+    		}
+    	} 
+    	
+    	//-- Get property from object
+    	$className = get_class($object);
+    	
+    	$json = null;
+    	if ($className == "stdClass") {
+    		if (isset($object->$key)) {
+    			$json = $this->toJson($object->$key);
+    		} 
+    	} else{
+    		
+    		$class = new ReflectionClass($className);
+    		if ($class->hasProperty($key)) {
+    			$property = $class->getProperty($key);
+    			$property->setAccessible(true);
+    			$value = $property->getValue($object);
+    			$json = $json = $this->toJson($value);
+    		}
+    	}
+    	return $json;
+    }
 
     /**
      * Convert Object to json string.
@@ -130,45 +207,68 @@ class Pson {
      */
     private function objectToArray($object)
     {
-
-        $data = array();
-        try {
-
-            $class           = new ReflectionClass($object);
-            $classPorperties = $class->getProperties();
-
-            foreach ($classPorperties as $property) {
-
-                //-- Apply modifiers exclusion strategy
-                if ($this->propertyExcluded($property)) {
-                    continue;
-                }
-
-                $property->setAccessible(true);
-                $name = $property->getName();
-                $val  = $property->getValue($object);
-
-                //-- Apply serializeNulls constraint
-                if (!$this->serializeNulls && $val == null) {
-                    continue;
-                }
-
-
-                if (gettype($val) != FIELD_TYPE_OBJECT) {
-                    $data[$name] = $val;
-                } else {
-                    $data[$name] = $this->objectToArray($val);
-                }
-            }
-        } catch (ReflectionException $e) {
-            throw new Exception($e->getMessage());
-        }
-
+		
+    	if (gettype($object) != "object"){
+    		return $object;
+    	}
+    	
+    	$data = array();
+    	
+    	// default type (stdClass) php object
+    	if (get_class($object) == "stdClass") {
+    		
+    		foreach ($object as $key => $val) {
+    			
+    			//-- Apply serializeNulls constraint
+    			if (!$this->serializeNulls && $val == null) {
+    				continue;
+    			}
+    			
+    			if (gettype($val) != "object") {
+    				$data[$key] = $val;
+    			} else {
+    				$data[$key] = $this->objectToArray($val);
+    			}
+    		}
+    	} else {
+    		
+	        try {
+	
+	            $class = new ReflectionClass($object);
+	            $classPorperties = $class->getProperties();
+	
+	            foreach ($classPorperties as $property) {
+	
+	                //-- Apply modifiers exclusion strategy
+	                if ($this->propertyExcluded($property)) {
+	                    continue;
+	                }
+	
+	                $property->setAccessible(true);
+	                $name = $property->getName();
+	                $val  = $property->getValue($object);
+	
+	                //-- Apply serializeNulls constraint
+	                if (!$this->serializeNulls && $val == null) {
+	                    continue;
+	                }
+	
+	                if (gettype($val) != "object") {
+	                    $data[$name] = $val;
+	                } else {
+	                    $data[$name] = $this->objectToArray($val);
+	                }
+	            }
+	        } catch (ReflectionException $e) {
+	            throw new Exception($e->getMessage());
+	        }
+    	}
         return $data;
     }
 
     /**
      * Parse json object.
+     * @see #fromJson(), #fromJsonArray()
      * @since 1.0
      */
     private function parseJsonObject($jsonObject, $className)
@@ -194,21 +294,21 @@ class Pson {
 			if($this->excludeNotExposed && !$reflectedAttr->hasAnnotation(ANNOTATION_EXPOSE)){
 				continue;
 			}
-
-            if (gettype($val) != FIELD_TYPE_OBJECT) {
+			
+			//TODO :  if (gettype($val) == "array of objects") ?
+			
+            if (gettype($val) != "object") {
                 $this->_setPropertyValue($class, $object, $attr, $val);
             } else {
 
                 try {
 
                     if ($reflectedAttr->hasAnnotation(ANNOTATION_CLASS)) {
-                        $name = $reflectedAttr->name;
+                    	//-- Get prerty type from annotation
                         $type = $reflectedAttr->getAnnotation(ANNOTATION_CLASS)->value;
-
-                        if ($attr == $name) {
-                            $obj = $this->parseJsonObject($val, $type);
-                            $this->_setPropertyValue($class, $object, $attr, $obj);
-                        }
+                        
+                        $obj = $this->parseJsonObject($val, $type);
+                        $this->_setPropertyValue($class, $object, $attr, $obj);
                     } else {
                     	
                         //-- No 'FieldClass' annotation found
