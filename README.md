@@ -91,6 +91,6 @@ _____
 
 ### Others sample :
 
-[__Pson + Twitter Api__](https://gist.github.com/mikamboo/6786943)
+[####Pson + Twitter Api](https://gist.github.com/mikamboo/6786943)
 
 (c) 2013 [Mikangali Labs](http://mikangali.com)
