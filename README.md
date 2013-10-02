@@ -13,11 +13,8 @@ ____
 * Convert object to json and Json to object
 * Convert PHP object containning private fiels
 * Use annotation to serialize/deserialize complex fileds
-
-####TODO:
-
-* Create Pson builder to set options (serializeNulls, excludeModifiers ...)
-* Add new annotation @Expose for managing fields exclusion
+* PsonBuilder class to set Pson options (serializeNulls, excludeModifiers ...)
+* @Expose annotation for managing fields exclusion
 
 ____
 
