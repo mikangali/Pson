@@ -86,7 +86,7 @@ ____
 
 _____
 
-### Others sample :
+### Others samples :
 
 [__Pson + Twitter Api__](https://gist.github.com/mikamboo/6786943)
 
