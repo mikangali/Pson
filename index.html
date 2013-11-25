@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Pson by mikangali-labs</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/respond.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <!--[if lt IE 8]>
+    <link rel="stylesheet" href="stylesheets/ie.css">
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+      <div id="header">
+        <nav>
+          <li class="fork"><a href="https://github.com/mikangali-labs/Pson">View On GitHub</a></li>
+          <li class="downloads"><a href="https://github.com/mikangali-labs/Pson/zipball/master">ZIP</a></li>
+          <li class="downloads"><a href="https://github.com/mikangali-labs/Pson/tarball/master">TAR</a></li>
+          <li class="title">DOWNLOADS</li>
+        </nav>
+      </div><!-- end header -->
+
+    <div class="wrapper">
+
+      <section>
+        <div id="title">
+          <h1>Pson</h1>
+          <p>A PHP library to convert an Object into its JSON representation and vice versa.</p>
+          <hr>
+          <span class="credits left">Project maintained by <a href="https://github.com/mikangali-labs">mikangali-labs</a></span>
+          <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
+        </div>
+
+        <h1>
+<a name="pson" class="anchor" href="#pson"><span class="octicon octicon-link"></span></a>Pson</h1>
+
+<p>A PHP library to convert an Object into its JSON representation and vice versa. Use Addendum PHP Lib.
+The librairy try to do the same job that Java Gson Library.</p>
+
+<p>Version : 1.0
+Require : PHP 5.4 +</p>
+
+<hr><h3>
+<a name="features" class="anchor" href="#features"><span class="octicon octicon-link"></span></a>Features</h3>
+
+<ul>
+<li>Convert object to json and Json to object</li>
+<li>Convert PHP object containning private fiels</li>
+<li>Use annotation to serialize/deserialize complex fileds</li>
+<li>PsonBuilder class to set Pson options (serializeNulls, excludeModifiers ...)</li>
+<li>
+<a href="https://github.com/Expose" class="user-mention">@Expose</a> annotation for managing fields exclusion</li>
+</ul><hr><h3>
+<a name="package-content" class="anchor" href="#package-content"><span class="octicon octicon-link"></span></a>Package content</h3>
+
+<ul>
+<li>./Pson.class.php  : Pson lib class</li>
+<li>./addendum/       : Addendum lib used by Pson</li>
+<li>./index.php       : Pson usage sample</li>
+</ul><hr><h3>
+<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage</h3>
+
+<pre><code>            &lt;?php
+
+            //-- Include Pson Lib
+            require ' Pson/src/Mikangali/Pson/Pson.php';
+
+            //-- Simple PHP modele class
+            class User{
+
+                private $_nom;          //-- private field
+                public $_prenom;
+
+                /**
+                 * @FieldClass('Voiture')
+                 */
+                private $_voiture;      //-- complex type field
+
+            }
+
+            class Voiture {
+                public $_modele;
+                public $_prix;
+            }
+
+            //-- json string
+            $json = '{"_nom":"mike","_prenom":"brandon","_voiture":{"_modele":"Audi A4","_prix":20000}}';
+
+            $pson = new Pson();
+
+            $user = $pson-&gt;fromJson($json,'User');
+
+            //-- #1
+            echo "&lt;pre&gt;"; print_r($user);
+
+            //-- #2
+            echo "&lt;pre&gt;"; print_r($pson-&gt;toJson($user));
+</code></pre>
+
+<h3>
+<a name="ouput" class="anchor" href="#ouput"><span class="octicon octicon-link"></span></a>Ouput</h3>
+
+<pre><code>            //-- #1
+            User Object
+            (
+                [_nom:User:private] =&gt; mike
+                [_prenom] =&gt; phoenix
+                [_user] =&gt;
+                [_voiture:User:private] =&gt; Voiture Object
+                    (
+                        [_modele] =&gt; Audi A4
+                        [_prix] =&gt; 20000
+                    )
+
+            )
+
+            //-- #2
+            {"_nom":"mike","_prenom":"phoenix","_voiture":{"_modele":"Audi A4","_prix":20000}}
+</code></pre>
+
+<hr><h3>
+<a name="others-samples-" class="anchor" href="#others-samples-"><span class="octicon octicon-link"></span></a>Others samples :</h3>
+
+<p><a href="https://gist.github.com/mikamboo/6786943"><strong>Pson + Twitter Api</strong></a></p>
+
+<p>(c) 2013 <a href="http://mikangali.com">Mikangali Labs</a></p>
+      </section>
+
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
